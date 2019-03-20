@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Apply Network</title>
+
+		<script type="text/javascript">
+			function getQueryParams() {
+				// console.log('ad-global > getQueryParams()')
+				var queryParams = {}
+				var query = window.location.href.split('?')
+				if (query.length > 1) {
+					var params = query[1].split('&')
+					for (var i in params) {
+						var keyValue = params[i].split('=')
+						if (keyValue.length == 2) queryParams[keyValue[0]] = decodeURIComponent(keyValue[1])
+					}
+				}
+				return queryParams
+			}
+			console.log(getQueryParams())
+		</script>
+	</head>
+
+	<body>
+		<div>
+			<h1>Apply Network</h1>
+			<form>
+				<input type="button" name="fname" value="STANDARD" />
+			</form>
+		</div>
+	</body>
+</html>

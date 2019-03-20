@@ -35,11 +35,15 @@
 	},
 	"wp-creative-server": {
 		"routes": {
+			"app": "/lib",
 			"api": "./index.js"
 		},
 		"hooks": {
 			"bulk-control": {
-				"Apply Network": "/api/?cmd=index+backups"
+				"Apply Network": "/app/index.html"
+			},
+			"size-control": {
+				"Apply Network": "/app/index.html"
 			}
 		}
 	}

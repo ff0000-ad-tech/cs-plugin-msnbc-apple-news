@@ -11,9 +11,7 @@ switch (argv.cmd) {
 		log(argv.profile)
 		const targets = JSON.parse(argv.targets)
 		log(targets)
-		// const folders = JSON.parse(argv.folders)
-		// log(folders)
-		applyNetwork.createIndex(argv.profile, targets) //, folders)
+		applyNetwork.createIndex(argv.profile, targets)
 		break
 }
 
