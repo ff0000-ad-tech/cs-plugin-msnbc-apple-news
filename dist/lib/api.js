@@ -35,7 +35,6 @@ function createIndex(networkString) {
 						const relativeDir = networkType[tag]
 						if (relativeDir) {
 							const snippetPath = path.join(__dirname, '.', 'networks', relativeDir, tag)
-							console.log('|path:', snippetPath)
 							fs.readFile(snippetPath, 'utf8', handleSnippet)
 						} else {
 							handleSnippet(null, '')
