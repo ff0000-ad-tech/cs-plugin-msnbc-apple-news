@@ -11,18 +11,20 @@ const indexJSON = JSON.parse(query.targets)
 const indexList = document.getElementById('index-list')
 for (var key in indexJSON) {
 	const val = key.match(/(?<=\/).*/)[0]
-	indexList.innerHTML += `<li>${val}</li>`
+	indexList.innerHTML += `<li>
+		<label class="">${val}</label>
+        <input type="text" value="${val}" />
+	</li>`
 }
 
 const networkList = document.getElementById('network-list')
 listJSON.forEach(str => {
 	const markup = `<li>
         <label class="custom-checkbox">
-            <input type="checkbox" value="${str}" />
+            <input type="radio" name="network-name" value="${str}" />
             <span class="checkmark">${str}</span>
         </label>
-    </li>
-    `
+    </li>`
 	networkList.innerHTML += markup
 })
 

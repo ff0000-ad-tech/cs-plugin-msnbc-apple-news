@@ -2310,12 +2310,12 @@ var indexList = document.getElementById('index-list');
 
 for (var key in indexJSON) {
   var val = key.match(/(?<=\/).*/)[0];
-  indexList.innerHTML += "<li>" + val + "</li>";
+  indexList.innerHTML += "<li>\n\t\t<label class=\"\">" + val + "</label>\n        <input type=\"text\" value=\"" + val + "\" />\n\t</li>";
 }
 
 var networkList = document.getElementById('network-list');
 _lib_networks_list_json__WEBPACK_IMPORTED_MODULE_2__.forEach(function (str) {
-  var markup = "<li>\n        <label class=\"custom-checkbox\">\n            <input type=\"checkbox\" value=\"" + str + "\" />\n            <span class=\"checkmark\">" + str + "</span>\n        </label>\n    </li>\n    ";
+  var markup = "<li>\n        <label class=\"custom-checkbox\">\n            <input type=\"radio\" name=\"network-name\" value=\"" + str + "\" />\n            <span class=\"checkmark\">" + str + "</span>\n        </label>\n    </li>";
   networkList.innerHTML += markup;
 });
 
