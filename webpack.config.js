@@ -73,6 +73,11 @@ module.exports = {
 				from: path.resolve(PATHS.source, 'lib/*'),
 				to: path.resolve(PATHS.dist, 'lib'),
 				flatten: true
+			},
+			{
+				from: path.resolve(PATHS.source, 'networks/*'),
+				to: path.resolve(PATHS.dist, 'networks'),
+				flatten: true
 			}
 		])
 	],

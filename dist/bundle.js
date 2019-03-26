@@ -2296,49 +2296,88 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var superagent__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! superagent */ "./node_modules/superagent/lib/client.js");
 /* harmony import */ var superagent__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(superagent__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var ad_global__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ad-global */ "./node_modules/@ff0000-ad-tech/ad-global/src/ad-global.js");
-/* harmony import */ var _lib_networks_list_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../lib/networks/list.json */ "./source/lib/networks/list.json");
-var _lib_networks_list_json__WEBPACK_IMPORTED_MODULE_2___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../lib/networks/list.json */ "./source/lib/networks/list.json", 1);
+/* harmony import */ var _networks_list_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../networks/list.json */ "./source/networks/list.json");
+var _networks_list_json__WEBPACK_IMPORTED_MODULE_2___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../networks/list.json */ "./source/networks/list.json", 1);
 
 
 
 var query = Object(ad_global__WEBPACK_IMPORTED_MODULE_1__["getQueryParams"])();
-var indexJSON = JSON.parse(query.targets); // console.log(query)
-// console.log(listJSON)
-// console.log(indexJSON)
-
+var indexJSON = JSON.parse(query.targets);
+console.log(indexJSON);
 var indexList = document.getElementById('index-list');
+var indexPool = [];
+
+var _loop = function _loop() {
+  var _key$split = key.split('/'),
+      profile = _key$split[0],
+      size = _key$split[1],
+      index = _key$split[2]; // console.warn(key, profile, size, index)
+
+
+  var li = create('li', indexList);
+  var label = create('label', li);
+  label.innerHTML = size + '/' + index;
+  var input = create('input', li);
+  input.setAttribute('type', 'text');
+  input.setAttribute('value', index);
+  var obj = {
+    elem: input,
+    profile: profile,
+    size: size,
+    orig: index,
+    mod: null,
+    focus: null
+  };
+  input.addEventListener('focus', function (e) {
+    obj.focus = e.target.value;
+  });
+  input.addEventListener('blur', function (e) {
+    if (e.target.value != obj.focus) {
+      obj.mod = e.target.value;
+    }
+
+    obj.focus = null;
+  });
+  indexPool.push(obj);
+};
 
 for (var key in indexJSON) {
-  var val = key.match(/(?<=\/).*/)[0];
-  indexList.innerHTML += "<li>\n\t\t<label class=\"\">" + val + "</label>\n        <input type=\"text\" value=\"" + val + "\" />\n\t</li>";
+  _loop();
+}
+
+function create(type, target) {
+  var elem = document.createElement(type);
+  target.appendChild(elem);
+  return elem;
 }
 
 var networkList = document.getElementById('network-list');
-_lib_networks_list_json__WEBPACK_IMPORTED_MODULE_2__.forEach(function (str) {
+_networks_list_json__WEBPACK_IMPORTED_MODULE_2__.forEach(function (str) {
   var markup = "<li>\n        <label class=\"custom-checkbox\">\n            <input type=\"radio\" name=\"network-name\" value=\"" + str + "\" />\n            <span class=\"checkmark\">" + str + "</span>\n        </label>\n    </li>";
   networkList.innerHTML += markup;
 });
 
 function processForm(e) {
   if (e.preventDefault) e.preventDefault();
-  var checkboxes = e.target.querySelectorAll('input[type=checkbox]'); // convert NodeList to Array first
-
-  var checkedPool = Array.prototype.slice.call(checkboxes).filter(function (elem) {
-    return elem.checked;
-  }).map(function (elem) {
-    return elem.value;
-  }); // console.log(checkedPool)
-
+  var checkedNetwork = document.querySelector('input[name="network-name"]:checked').value;
+  var outputTargets = indexPool.map(function (src) {
+    return {
+      size: src.size,
+      index: src.orig,
+      name: src.mod || src.elem.value
+    };
+  });
+  console.log(outputTargets);
   superagent__WEBPACK_IMPORTED_MODULE_0___default.a.post("/@ff0000-ad-tech/cs-plugin-apply-network/api/").send({
-    targets: query.targets
+    targets: outputTargets
   }).send({
-    networks: checkedPool
+    network: checkedNetwork
   }).end(function (err, res) {
     if (err) {
       return alert(err);
     }
 
-    console.log('Index(s) create success!'); // redircet back to CS/app
+    console.log('Index(s) create success!'); // 	redirect back to CS/app
 
     location.href = query.api.replace('/api', '/app');
   }); // You must return false to prevent the default form behavior
@@ -2347,14 +2386,28 @@ function processForm(e) {
 }
 
 var form = document.getElementById('network-form');
-form.addEventListener('submit', processForm);
+form.addEventListener('submit', processForm); // Radios
+
+var radios = form.querySelectorAll('input[type=radio]'); // convert NodeList to Array first
+
+Array.prototype.slice.call(radios).forEach(function (r) {
+  r.addEventListener('change', function (e) {
+    var currentNetwork = e.target.value; // update the inputs
+
+    indexPool.forEach(function (obj) {
+      var source = obj.mod || obj.orig;
+      var str = source.replace(/\.(?=[^.]*$)/, "__" + currentNetwork + ".");
+      obj.elem.value = str;
+    });
+  });
+}); // .post(`/@ff0000-ad-tech/cs-plugin-apply-network/api/`)
 
 /***/ }),
 
-/***/ "./source/lib/networks/list.json":
-/*!***************************************!*\
-  !*** ./source/lib/networks/list.json ***!
-  \***************************************/
+/***/ "./source/networks/list.json":
+/*!***********************************!*\
+  !*** ./source/networks/list.json ***!
+  \***********************************/
 /*! exports provided: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, default */
 /***/ (function(module) {
 

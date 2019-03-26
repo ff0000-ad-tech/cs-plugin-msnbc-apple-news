@@ -76,7 +76,7 @@ button {
 }
 
 .custom-checkbox {
-	display: block;
+	display: initial;
 	position: relative;
 	cursor: pointer;
 	-webkit-user-select: none;

@@ -1,20 +1,46 @@
 import superagent from 'superagent'
 import { getQueryParams } from 'ad-global'
-import listJSON from '../lib/networks/list.json'
+import listJSON from '../networks/list.json'
 
 const query = getQueryParams()
 const indexJSON = JSON.parse(query.targets)
-// console.log(query)
-// console.log(listJSON)
-// console.log(indexJSON)
+console.log(indexJSON)
 
 const indexList = document.getElementById('index-list')
+const indexPool = []
 for (var key in indexJSON) {
-	const val = key.match(/(?<=\/).*/)[0]
-	indexList.innerHTML += `<li>
-		<label class="">${val}</label>
-        <input type="text" value="${val}" />
-	</li>`
+	const [profile, size, index] = key.split('/')
+	// console.warn(key, profile, size, index)
+	const li = create('li', indexList)
+	const label = create('label', li)
+	label.innerHTML = size + '/' + index
+	const input = create('input', li)
+	input.setAttribute('type', 'text')
+	input.setAttribute('value', index)
+	const obj = {
+		elem: input,
+		profile,
+		size,
+		orig: index,
+		mod: null,
+		focus: null
+	}
+	input.addEventListener('focus', e => {
+		obj.focus = e.target.value
+	})
+	input.addEventListener('blur', e => {
+		if (e.target.value != obj.focus) {
+			obj.mod = e.target.value
+		}
+		obj.focus = null
+	})
+	indexPool.push(obj)
+}
+
+function create(type, target) {
+	const elem = document.createElement(type)
+	target.appendChild(elem)
+	return elem
 }
 
 const networkList = document.getElementById('network-list')
@@ -31,25 +57,26 @@ listJSON.forEach(str => {
 function processForm(e) {
 	if (e.preventDefault) e.preventDefault()
 
-	const checkboxes = e.target.querySelectorAll('input[type=checkbox]')
-	// convert NodeList to Array first
-	const checkedPool = Array.prototype.slice
-		.call(checkboxes)
-		.filter(elem => elem.checked)
-		.map(elem => elem.value)
-	// console.log(checkedPool)
+	const checkedNetwork = document.querySelector('input[name="network-name"]:checked').value
+	const outputTargets = indexPool.map(src => {
+		return {
+			size: src.size,
+			index: src.orig,
+			name: src.mod || src.elem.value
+		}
+	})
+	console.log(outputTargets)
 
 	superagent
 		.post(`/@ff0000-ad-tech/cs-plugin-apply-network/api/`)
-		.send({ targets: query.targets })
-		.send({ networks: checkedPool })
+		.send({ targets: outputTargets })
+		.send({ network: checkedNetwork })
 		.end((err, res) => {
 			if (err) {
 				return alert(err)
 			}
 			console.log('Index(s) create success!')
-
-			// redircet back to CS/app
+			// 	redirect back to CS/app
 			location.href = query.api.replace('/api', '/app')
 		})
 
@@ -57,5 +84,22 @@ function processForm(e) {
 	return false
 }
 
-var form = document.getElementById('network-form')
+const form = document.getElementById('network-form')
 form.addEventListener('submit', processForm)
+
+// Radios
+const radios = form.querySelectorAll('input[type=radio]')
+// convert NodeList to Array first
+Array.prototype.slice.call(radios).forEach(r => {
+	r.addEventListener('change', e => {
+		const currentNetwork = e.target.value
+		// update the inputs
+		indexPool.forEach(obj => {
+			const source = obj.mod || obj.orig
+			const str = source.replace(/\.(?=[^.]*$)/, `__${currentNetwork}.`)
+			obj.elem.value = str
+		})
+	})
+})
+
+// .post(`/@ff0000-ad-tech/cs-plugin-apply-network/api/`)
