@@ -2,13 +2,14 @@ const argv = require('minimist')(process.argv.slice(2))
 const path = require('path')
 const fs = require('fs')
 const hooks = require('@ff0000-ad-tech/hooks-regex')
-const getNetwork = require('../networks/index.js')
-const targetsJSON = JSON.parse(argv.targets)
+const networkList = require('../networks/index.js')
 
-createIndex(argv.network)
+//
+// console.log(argv.action)
 
-function createIndex(networkString) {
-	const networkType = getNetwork(networkString)
+function createIndex() {
+	const networkType = networkList[argv.network]
+	const targetsJSON = JSON.parse(argv.targets)
 	targetsJSON.forEach(target => {
 		const dirBuildAd = `./1-build/${target.size}/`
 		// TODO - check if dir exists?
@@ -48,4 +49,14 @@ function createIndex(networkString) {
 			})
 		})
 	})
+}
+
+if (argv.action === 'list') {
+	let list = []
+	for (var key in networkList) {
+		list.push(key)
+	}
+	console.log(JSON.stringify(list))
+} else {
+	createIndex()
 }

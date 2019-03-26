@@ -2296,66 +2296,82 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var superagent__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! superagent */ "./node_modules/superagent/lib/client.js");
 /* harmony import */ var superagent__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(superagent__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var ad_global__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ad-global */ "./node_modules/@ff0000-ad-tech/ad-global/src/ad-global.js");
-/* harmony import */ var _networks_list_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../networks/list.json */ "./source/networks/list.json");
-var _networks_list_json__WEBPACK_IMPORTED_MODULE_2___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../networks/list.json */ "./source/networks/list.json", 1);
-
 
 
 var query = Object(ad_global__WEBPACK_IMPORTED_MODULE_1__["getQueryParams"])();
-var indexJSON = JSON.parse(query.targets);
-console.log(indexJSON);
-var indexList = document.getElementById('index-list');
 var indexPool = [];
 
-var _loop = function _loop() {
-  var _key$split = key.split('/'),
-      profile = _key$split[0],
-      size = _key$split[1],
-      index = _key$split[2]; // console.warn(key, profile, size, index)
+function init(listJSON) {
+  var indexJSON = JSON.parse(query.targets);
+  console.log(indexJSON);
+  var indexList = document.getElementById('index-list');
+
+  var _loop = function _loop() {
+    var _key$split = key.split('/'),
+        profile = _key$split[0],
+        size = _key$split[1],
+        index = _key$split[2]; // console.warn(key, profile, size, index)
 
 
-  var li = create('li', indexList);
-  var label = create('label', li);
-  label.innerHTML = size + '/' + index;
-  var input = create('input', li);
-  input.setAttribute('type', 'text');
-  input.setAttribute('value', index);
-  var obj = {
-    elem: input,
-    profile: profile,
-    size: size,
-    orig: index,
-    mod: null,
-    focus: null
+    var li = create('li', indexList);
+    var label = create('label', li);
+    label.innerHTML = size + '/' + index;
+    var input = create('input', li);
+    input.setAttribute('type', 'text');
+    input.setAttribute('value', index);
+    var obj = {
+      elem: input,
+      profile: profile,
+      size: size,
+      orig: index,
+      mod: null,
+      focus: null
+    };
+    input.addEventListener('focus', function (e) {
+      obj.focus = e.target.value;
+    });
+    input.addEventListener('blur', function (e) {
+      if (e.target.value != obj.focus) {
+        obj.mod = e.target.value;
+      }
+
+      obj.focus = null;
+    });
+    indexPool.push(obj);
   };
-  input.addEventListener('focus', function (e) {
-    obj.focus = e.target.value;
+
+  for (var key in indexJSON) {
+    _loop();
+  }
+
+  function create(type, target) {
+    var elem = document.createElement(type);
+    target.appendChild(elem);
+    return elem;
+  }
+
+  var networkList = document.getElementById('network-list');
+  listJSON.forEach(function (str) {
+    var markup = "<li>\n\t\t\t<label class=\"custom-checkbox\">\n\t\t\t\t<input type=\"radio\" name=\"network-name\" value=\"" + str + "\" />\n\t\t\t\t<span class=\"checkmark\">" + str + "</span>\n\t\t\t</label>\n\t\t</li>";
+    networkList.innerHTML += markup;
   });
-  input.addEventListener('blur', function (e) {
-    if (e.target.value != obj.focus) {
-      obj.mod = e.target.value;
-    }
+  var form = document.getElementById('network-form');
+  form.addEventListener('submit', processForm); // Radios
 
-    obj.focus = null;
+  var radios = form.querySelectorAll('input[type=radio]'); // convert NodeList to Array first
+
+  Array.prototype.slice.call(radios).forEach(function (r) {
+    r.addEventListener('change', function (e) {
+      var currentNetwork = e.target.value; // update the inputs
+
+      indexPool.forEach(function (obj) {
+        var source = obj.mod || obj.orig;
+        var str = source.replace(/\.(?=[^.]*$)/, "__" + currentNetwork + ".");
+        obj.elem.value = str;
+      });
+    });
   });
-  indexPool.push(obj);
-};
-
-for (var key in indexJSON) {
-  _loop();
 }
-
-function create(type, target) {
-  var elem = document.createElement(type);
-  target.appendChild(elem);
-  return elem;
-}
-
-var networkList = document.getElementById('network-list');
-_networks_list_json__WEBPACK_IMPORTED_MODULE_2__.forEach(function (str) {
-  var markup = "<li>\n        <label class=\"custom-checkbox\">\n            <input type=\"radio\" name=\"network-name\" value=\"" + str + "\" />\n            <span class=\"checkmark\">" + str + "</span>\n        </label>\n    </li>";
-  networkList.innerHTML += markup;
-});
 
 function processForm(e) {
   if (e.preventDefault) e.preventDefault();
@@ -2385,33 +2401,23 @@ function processForm(e) {
   return false;
 }
 
-var form = document.getElementById('network-form');
-form.addEventListener('submit', processForm); // Radios
+superagent__WEBPACK_IMPORTED_MODULE_0___default.a.get("/@ff0000-ad-tech/cs-plugin-apply-network/api/?action=list") // .query({ action: 'edit', city: 'London' })
+.end(function (err, res) {
+  if (err) {
+    alert('Error with API. Unable to proceed');
+    return;
+  }
 
-var radios = form.querySelectorAll('input[type=radio]'); // convert NodeList to Array first
+  try {
+    var data = JSON.parse(res.text);
+    var result = JSON.parse(data.stdout);
+    console.log(data); // initialize the app with the API result
 
-Array.prototype.slice.call(radios).forEach(function (r) {
-  r.addEventListener('change', function (e) {
-    var currentNetwork = e.target.value; // update the inputs
-
-    indexPool.forEach(function (obj) {
-      var source = obj.mod || obj.orig;
-      var str = source.replace(/\.(?=[^.]*$)/, "__" + currentNetwork + ".");
-      obj.elem.value = str;
-    });
-  });
-}); // .post(`/@ff0000-ad-tech/cs-plugin-apply-network/api/`)
-
-/***/ }),
-
-/***/ "./source/networks/list.json":
-/*!***********************************!*\
-  !*** ./source/networks/list.json ***!
-  \***********************************/
-/*! exports provided: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, default */
-/***/ (function(module) {
-
-module.exports = ["ADWORDS","DC_STUDIO","ESPN_ON_CHANNEL","FLASHTALKING","MRAID","NETFLIX_MONET","OATH_ADTECH","SIZMEK","STANDARD","VELVET"];
+    init(result);
+  } catch (e) {
+    alert(e);
+  }
+});
 
 /***/ })
 

@@ -1,4 +1,4 @@
-const networks = {
+const networkList = {
 	ADWORDS: require('./adwords/index.js'),
 	DC_STUDIO: require('./dc_studio/index.js'),
 	ESPN_ON_CHANNEL: require('./espn_on_channel/index.js'),
@@ -11,6 +11,4 @@ const networks = {
 	VELVET: require('./velvet/index.js')
 }
 
-const getNetwork = type => networks[type]
-
-module.exports = getNetwork
+module.exports = networkList
