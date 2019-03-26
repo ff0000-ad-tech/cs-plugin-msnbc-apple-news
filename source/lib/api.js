@@ -4,9 +4,6 @@ const fs = require('fs')
 const hooks = require('@ff0000-ad-tech/hooks-regex')
 const networkList = require('../networks/index.js')
 
-//
-// console.log(argv.action)
-
 function createIndex() {
 	const networkType = networkList[argv.network]
 	const targetsJSON = JSON.parse(argv.targets)
@@ -56,6 +53,7 @@ if (argv.action === 'list') {
 	for (var key in networkList) {
 		list.push(key)
 	}
+	// res.text comes from console.log here
 	console.log(JSON.stringify(list))
 } else {
 	createIndex()

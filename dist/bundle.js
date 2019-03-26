@@ -2305,15 +2305,13 @@ var clashTotal = 0;
 
 function init(listJSON) {
   var indexJSON = JSON.parse(query.targets);
-  console.log(indexJSON);
   var indexList = document.getElementById('index-list');
 
   var _loop = function _loop() {
     var _key$split = key.split('/'),
         profile = _key$split[0],
         size = _key$split[1],
-        index = _key$split[2]; // console.warn(key, profile, size, index)
-
+        index = _key$split[2];
 
     var li = create('li', indexList);
     var label = create('label', li);
@@ -2404,7 +2402,6 @@ function processForm() {
       name: src.mod || src.elem.value
     };
   });
-  console.log(outputTargets);
   superagent__WEBPACK_IMPORTED_MODULE_0___default.a.post("/@ff0000-ad-tech/cs-plugin-apply-network/api/").send({
     targets: outputTargets
   }).send({
@@ -2414,16 +2411,16 @@ function processForm() {
       return alert(err);
     }
 
-    console.log('Index(s) create success!'); // 	redirect back to CS/app
+    console.log('Index(s) create success!'); // redirect back to CS/app
 
     location.href = query.api.replace('/api', '/app');
   }); // You must return false to prevent the default form behavior
 
   return false;
-}
+} // loads in the networks
 
-superagent__WEBPACK_IMPORTED_MODULE_0___default.a.get("/@ff0000-ad-tech/cs-plugin-apply-network/api/?action=list") // .query({ action: 'edit', city: 'London' })
-.end(function (err, res) {
+
+superagent__WEBPACK_IMPORTED_MODULE_0___default.a.get("/@ff0000-ad-tech/cs-plugin-apply-network/api/?action=list").end(function (err, res) {
   if (err) {
     alert('Error with API. Unable to proceed');
     return;
@@ -2431,8 +2428,7 @@ superagent__WEBPACK_IMPORTED_MODULE_0___default.a.get("/@ff0000-ad-tech/cs-plugi
 
   try {
     var data = JSON.parse(res.text);
-    var result = JSON.parse(data.stdout);
-    console.log(data); // initialize the app with the API result
+    var result = JSON.parse(data.stdout); // initialize the app with the API result
 
     init(result);
   } catch (e) {
