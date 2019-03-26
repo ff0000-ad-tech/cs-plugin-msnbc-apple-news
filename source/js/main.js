@@ -3,16 +3,14 @@ import { getQueryParams } from 'ad-global'
 
 const query = getQueryParams()
 const indexPool = []
+let isNetworkSelected = false
+let clashTotal = 0
 
 function init(listJSON) {
 	const indexJSON = JSON.parse(query.targets)
-	console.log(indexJSON)
-
 	const indexList = document.getElementById('index-list')
-
 	for (var key in indexJSON) {
 		const [profile, size, index] = key.split('/')
-		// console.warn(key, profile, size, index)
 		const li = create('li', indexList)
 		const label = create('label', li)
 		label.innerHTML = size + '/' + index
@@ -31,18 +29,23 @@ function init(listJSON) {
 			obj.focus = e.target.value
 		})
 		input.addEventListener('blur', e => {
+			// check if the name collides
+			if (isNetworkSelected) {
+				if (e.target.value === obj.orig) {
+					input.classList.add('clash')
+					clashTotal++
+				} else {
+					input.classList.remove('clash')
+					clashTotal--
+				}
+			}
+
 			if (e.target.value != obj.focus) {
 				obj.mod = e.target.value
 			}
 			obj.focus = null
 		})
 		indexPool.push(obj)
-	}
-
-	function create(type, target) {
-		const elem = document.createElement(type)
-		target.appendChild(elem)
-		return elem
 	}
 
 	const networkList = document.getElementById('network-list')
@@ -57,7 +60,7 @@ function init(listJSON) {
 	})
 
 	const form = document.getElementById('network-form')
-	form.addEventListener('submit', processForm)
+	form.addEventListener('submit', submitForm)
 
 	// Radios
 	const radios = form.querySelectorAll('input[type=radio]')
@@ -70,14 +73,30 @@ function init(listJSON) {
 				const source = obj.mod || obj.orig
 				const str = source.replace(/\.(?=[^.]*$)/, `__${currentNetwork}.`)
 				obj.elem.value = str
+				obj.elem.classList.remove('clash')
 			})
+
+			// a network has ben selected; enable submit button
+			isNetworkSelected = true
+			document.querySelector('button[type="submit"]').disabled = false
 		})
 	})
 }
 
-function processForm(e) {
+function submitForm(e) {
 	if (e.preventDefault) e.preventDefault()
 
+	if (clashTotal > 0) {
+		var confirmation = confirm(
+			`WARNING:\nIndex files named the same as source (in red).\nThis will OVERWRITE the original.\nDo you want to proceed?`
+		)
+		return confirmation ? processForm() : false
+	} else {
+		return processForm()
+	}
+}
+
+function processForm() {
 	const checkedNetwork = document.querySelector('input[name="network-name"]:checked').value
 	const outputTargets = indexPool.map(src => {
 		return {
@@ -86,7 +105,6 @@ function processForm(e) {
 			name: src.mod || src.elem.value
 		}
 	})
-	console.log(outputTargets)
 
 	superagent
 		.post(`/@ff0000-ad-tech/cs-plugin-apply-network/api/`)
@@ -97,7 +115,7 @@ function processForm(e) {
 				return alert(err)
 			}
 			console.log('Index(s) create success!')
-			// 	redirect back to CS/app
+			// redirect back to CS/app
 			location.href = query.api.replace('/api', '/app')
 		})
 
@@ -105,22 +123,25 @@ function processForm(e) {
 	return false
 }
 
-superagent
-	.get(`/@ff0000-ad-tech/cs-plugin-apply-network/api/?action=list`)
-	// .query({ action: 'edit', city: 'London' })
-	.end((err, res) => {
-		if (err) {
-			alert('Error with API. Unable to proceed')
-			return
-		}
+// loads in the networks
+superagent.get(`/@ff0000-ad-tech/cs-plugin-apply-network/api/?action=list`).end((err, res) => {
+	if (err) {
+		alert('Error with API. Unable to proceed')
+		return
+	}
 
-		try {
-			const data = JSON.parse(res.text)
-			const result = JSON.parse(data.stdout)
-			console.log(data)
-			// initialize the app with the API result
-			init(result)
-		} catch (e) {
-			alert(e)
-		}
-	})
+	try {
+		const data = JSON.parse(res.text)
+		const result = JSON.parse(data.stdout)
+		// initialize the app with the API result
+		init(result)
+	} catch (e) {
+		alert(e)
+	}
+})
+
+function create(type, target) {
+	const elem = document.createElement(type)
+	target.appendChild(elem)
+	return elem
+}

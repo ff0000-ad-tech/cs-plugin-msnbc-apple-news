@@ -2300,6 +2300,8 @@ __webpack_require__.r(__webpack_exports__);
 
 var query = Object(ad_global__WEBPACK_IMPORTED_MODULE_1__["getQueryParams"])();
 var indexPool = [];
+var isNetworkSelected = false;
+var clashTotal = 0;
 
 function init(listJSON) {
   var indexJSON = JSON.parse(query.targets);
@@ -2331,6 +2333,17 @@ function init(listJSON) {
       obj.focus = e.target.value;
     });
     input.addEventListener('blur', function (e) {
+      // check if the name collides
+      if (isNetworkSelected) {
+        if (e.target.value === obj.orig) {
+          input.classList.add('clash');
+          clashTotal++;
+        } else {
+          input.classList.remove('clash');
+          clashTotal--;
+        }
+      }
+
       if (e.target.value != obj.focus) {
         obj.mod = e.target.value;
       }
@@ -2344,19 +2357,13 @@ function init(listJSON) {
     _loop();
   }
 
-  function create(type, target) {
-    var elem = document.createElement(type);
-    target.appendChild(elem);
-    return elem;
-  }
-
   var networkList = document.getElementById('network-list');
   listJSON.forEach(function (str) {
     var markup = "<li>\n\t\t\t<label class=\"custom-checkbox\">\n\t\t\t\t<input type=\"radio\" name=\"network-name\" value=\"" + str + "\" />\n\t\t\t\t<span class=\"checkmark\">" + str + "</span>\n\t\t\t</label>\n\t\t</li>";
     networkList.innerHTML += markup;
   });
   var form = document.getElementById('network-form');
-  form.addEventListener('submit', processForm); // Radios
+  form.addEventListener('submit', submitForm); // Radios
 
   var radios = form.querySelectorAll('input[type=radio]'); // convert NodeList to Array first
 
@@ -2368,13 +2375,27 @@ function init(listJSON) {
         var source = obj.mod || obj.orig;
         var str = source.replace(/\.(?=[^.]*$)/, "__" + currentNetwork + ".");
         obj.elem.value = str;
-      });
+        obj.elem.classList.remove('clash');
+      }); // a network has ben selected; enable submit button
+
+      isNetworkSelected = true;
+      document.querySelector('button[type="submit"]').disabled = false;
     });
   });
 }
 
-function processForm(e) {
+function submitForm(e) {
   if (e.preventDefault) e.preventDefault();
+
+  if (clashTotal > 0) {
+    var confirmation = confirm("WARNING:\nIndex files named the same as source (in red).\nThis will OVERWRITE the original.\nDo you want to proceed?");
+    return confirmation ? processForm() : false;
+  } else {
+    return processForm();
+  }
+}
+
+function processForm() {
   var checkedNetwork = document.querySelector('input[name="network-name"]:checked').value;
   var outputTargets = indexPool.map(function (src) {
     return {
@@ -2418,6 +2439,12 @@ superagent__WEBPACK_IMPORTED_MODULE_0___default.a.get("/@ff0000-ad-tech/cs-plugi
     alert(e);
   }
 });
+
+function create(type, target) {
+  var elem = document.createElement(type);
+  target.appendChild(elem);
+  return elem;
+}
 
 /***/ })
 

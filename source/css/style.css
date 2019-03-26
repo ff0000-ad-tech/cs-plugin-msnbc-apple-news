@@ -57,6 +57,10 @@ input[type='text'] {
 	padding: 0.3em;
 	text-align: center;
 }
+input[type='text'].clash {
+	border: 1px solid red;
+	background: #ffb4b4;
+}
 
 li {
 	padding-bottom: 0.7em;
