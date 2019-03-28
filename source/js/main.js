@@ -4,7 +4,6 @@ import { getQueryParams } from 'ad-global'
 const query = getQueryParams()
 const indexPool = []
 let isNetworkSelected = false
-let clashTotal = 0
 
 function init(listJSON) {
 	const indexJSON = JSON.parse(query.targets)
@@ -33,10 +32,8 @@ function init(listJSON) {
 			if (isNetworkSelected) {
 				if (e.target.value === obj.orig) {
 					input.classList.add('clash')
-					clashTotal++
 				} else {
 					input.classList.remove('clash')
-					clashTotal--
 				}
 			}
 
@@ -86,7 +83,16 @@ function init(listJSON) {
 function submitForm(e) {
 	if (e.preventDefault) e.preventDefault()
 
-	if (clashTotal > 0) {
+	// check the names for overwrites
+	let isConflict = false
+	for (var i = 0, k = indexPool.length; i < k; i++) {
+		const obj = indexPool[i]
+		if (obj.elem.value === obj.orig) {
+			isConflict = true
+			break
+		}
+	}
+	if (isConflict) {
 		var confirmation = confirm(
 			`WARNING:\nIndex files named the same as source (in red).\nThis will OVERWRITE the original.\nDo you want to proceed?`
 		)

@@ -2301,7 +2301,6 @@ __webpack_require__.r(__webpack_exports__);
 var query = Object(ad_global__WEBPACK_IMPORTED_MODULE_1__["getQueryParams"])();
 var indexPool = [];
 var isNetworkSelected = false;
-var clashTotal = 0;
 
 function init(listJSON) {
   var indexJSON = JSON.parse(query.targets);
@@ -2335,10 +2334,8 @@ function init(listJSON) {
       if (isNetworkSelected) {
         if (e.target.value === obj.orig) {
           input.classList.add('clash');
-          clashTotal++;
         } else {
           input.classList.remove('clash');
-          clashTotal--;
         }
       }
 
@@ -2383,9 +2380,20 @@ function init(listJSON) {
 }
 
 function submitForm(e) {
-  if (e.preventDefault) e.preventDefault();
+  if (e.preventDefault) e.preventDefault(); // check the names for overwrites
 
-  if (clashTotal > 0) {
+  var isConflict = false;
+
+  for (var i = 0, k = indexPool.length; i < k; i++) {
+    var obj = indexPool[i];
+
+    if (obj.elem.value === obj.orig) {
+      isConflict = true;
+      break;
+    }
+  }
+
+  if (isConflict) {
     var confirmation = confirm("WARNING:\nIndex files named the same as source (in red).\nThis will OVERWRITE the original.\nDo you want to proceed?");
     return confirmation ? processForm() : false;
   } else {
