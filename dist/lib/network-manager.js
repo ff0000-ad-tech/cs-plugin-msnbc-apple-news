@@ -7,7 +7,7 @@ const debug = require('@ff0000-ad-tech/debug')
 var log = debug('cs-plugin-apply-network:network-manager')
 
 const getNetworks = async () => {
-	return Object.keys(networkList).map(network => network)
+	return networkList.map(network => network)
 }
 
 const createIndex = async (context, targets, network) => {
