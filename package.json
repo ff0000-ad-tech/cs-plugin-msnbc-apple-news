@@ -62,7 +62,7 @@
 	"wp-creative-server": {
 		"routes": {
 			"app": "/dist",
-			"api": "./dist/lib/api.js"
+			"api": "./lib/api.js"
 		},
 		"hooks": {
 			"bulk-control": {
