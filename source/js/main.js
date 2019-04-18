@@ -114,8 +114,7 @@ function processForm() {
 
 	superagent
 		.post(`/@ff0000-ad-tech/cs-plugin-apply-network/api/`)
-		.send({ targets: outputTargets })
-		.send({ network: checkedNetwork })
+		.send({ action: 'write', targets: outputTargets, network: checkedNetwork })
 		.end((err, res) => {
 			if (err) {
 				return alert(err)
