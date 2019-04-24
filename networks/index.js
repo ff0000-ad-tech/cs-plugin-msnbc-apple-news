@@ -1,6 +1,7 @@
 const networkList = {
 	ADWORDS: require('./adwords/index.js'),
 	DC_STUDIO: require('./dc_studio/index.js'),
+	DC_STUDIO_HULU: require('./dc_studio_hulu/index.js'),
 	ESPN_ON_CHANNEL: require('./espn_on_channel/index.js'),
 	FLASHTALKING: require('./flashtalking/index.js'),
 	MRAID: require('./mraid/index.js'),
