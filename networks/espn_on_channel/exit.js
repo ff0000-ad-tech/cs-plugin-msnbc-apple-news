@@ -15,17 +15,18 @@ this.exit = function(clickTag) {
 			}
 			break
 
-		case 'MRAID':
-			console.log('Network -> MRAID EXIT (ESPN App)')
-			if (navigator.userAgent.toLowerCase().indexOf('android') > -1) {
-				mraid.open(clickUrl + '?ord=' + cachebuster)
+		case 'MRAID_ANDROID':
+			console.log('Network -> MRAID EXIT (ESPN App, Android)')
+			mraid.open(clickUrl + '?ord=' + cachebuster)
+			break
+
+		case 'MRAID_IOS':
+			console.log('Network -> MRAID EXIT (ESPN App, iOS)')
+			// do not append macro to the sportscenter deeplink
+			if (clickTag.search(/^sportscenter/) > -1) {
+				mraid.open(clickTag)
 			} else {
-				// do not append macro to the sportscenter deeplink
-				if (clickTag.search(/^sportscenter/) > -1) {
-					mraid.open(clickTag)
-				} else {
-					mraid.open(clickUrl)
-				}
+				mraid.open(clickUrl)
 			}
 			break
 
