@@ -15,11 +15,7 @@ this.exit = function(clickTag) {
 			}
 			break
 
-		case 'MRAID_ANDROID':
-			console.log('Network -> MRAID EXIT (ESPN App, Android)')
-			mraid.open(clickUrl + '?ord=' + cachebuster)
-			break
-
+		case 'MRAID': // backwards compatibility
 		case 'MRAID_IOS':
 			console.log('Network -> MRAID EXIT (ESPN App, iOS)')
 			// do not append macro to the sportscenter deeplink
@@ -28,6 +24,11 @@ this.exit = function(clickTag) {
 			} else {
 				mraid.open(clickUrl)
 			}
+			break
+
+		case 'MRAID_ANDROID':
+			console.log('Network -> MRAID EXIT (ESPN App, Android)')
+			mraid.open(clickUrl + '?ord=' + cachebuster)
 			break
 
 		case 'ESPN':
