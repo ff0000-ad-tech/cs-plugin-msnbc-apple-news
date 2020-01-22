@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="initial-scale=1,maximum-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta content="utf-8" http-equiv="encoding">
+	<title>Double Banner</title>
+	<script type="text/javascript">
+		window.addEventListener("resize", function() {
+			if (window.adParams) {
+				window.adParams.adWidth = window.innerWidth;
+				window.adParams.adHeight = window.innerHeight;
+			}
+		});
+	</script>
+	<style type="text/css">
+		#view,
+		body,
+		html {
+			width: 100%;
+			height: 100%
+		}
+
+		body {
+			margin: 0;
+			outline: 0;
+			-webkit-tap-highlight-color: transparent
+		}
+	</style>
+	<style type="text/css" id="RED_uiBorder">
+		.ui-border {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			border-width: 0;
+			border-style: solid;
+			box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			-webkit-box-sizing: border-box
+		}
+	</style>
+</head>
+
+<body>
+	<div id="view">
+		<div id="main"></div>
+		<div id="aux">
+			<div id="preloader" class="ui-border"></div>
+			<div id="fail"></div>
+		</div>
+	</div>
+	<a id="anchor"
+		style="position:absolute;top:0;left:0;cursor:pointer;display:block;height:100vh;width:100vw;z-index:10"></a>
+	<script type="text/javascript">
+		function isIphonePlus() {
+			return window.innerWidth === 414 || window.innerWidth === 736;
+		}
+
+		function inLandscape() {
+			return window.innerWidth >= 667
+		}
+
+		var sizeAssetsPath = inLandscape() ? "landscape/" : "portrait/";
+		adParams.appleNewsSize = inLandscape() ? '2208x212' : '1242x332'
+
+	</script>
+</body>
+
+</html>
