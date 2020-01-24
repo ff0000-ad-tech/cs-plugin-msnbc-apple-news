@@ -33,25 +33,23 @@ describe('Apple News Ad Packaging', () => {
 			await fsp.stat(path.resolve(TEMP_DIR_NAME, standardArgs.creativeType))
 		})
 
-		describe('In each size:', () => {
-			test('Sizes copied over', async () => {
-				async function checkForAssetsInOrientation(orientation) {
-					const size = orientation === 'landscape' ? landscapeSize : portraitSize
-					const originalSizePath = path.resolve(FIXTURES_PATH, size)
-					const resultOrientationPath = path.resolve(TEMP_DIR_NAME, standardArgs.creativeType, orientation)
-					const readResults = await Promise.all([fsp.readdir(originalSizePath), fsp.readdir(resultOrientationPath)])
+		test('size files copied over to respective orientation', async () => {
+			async function checkForAssetsInOrientation(orientation) {
+				const size = orientation === 'landscape' ? landscapeSize : portraitSize
+				const originalSizePath = path.resolve(FIXTURES_PATH, size)
+				const resultOrientationPath = path.resolve(TEMP_DIR_NAME, standardArgs.creativeType, orientation)
+				const readResults = await Promise.all([fsp.readdir(originalSizePath), fsp.readdir(resultOrientationPath)])
 
-					const orientationFiles = readResults[0]
-					const originalSizeFiles = readResults[1]
-					expect(orientationFiles).toEqual(expect.arrayContaining(originalSizeFiles))
-				}
+				const orientationFiles = readResults[0]
+				const originalSizeFiles = readResults[1]
+				expect(orientationFiles).toEqual(expect.arrayContaining(originalSizeFiles))
+			}
 
-				const testPromises = ['landscape', 'portrait'].map(orientation => checkForAssetsInOrientation(orientation))
-				await Promise.all(testPromises)
-			})
-
-			test.todo('build.bundle.js now includes script tags from index except adParams script tag')
+			const testPromises = ['landscape', 'portrait'].map(orientation => checkForAssetsInOrientation(orientation))
+			await Promise.all(testPromises)
 		})
+
+		test.todo('build.bundle.js now includes script tags from index except adParams script tag')
 	})
 
 	test('Throws error if path to ad sizes not assigned to landscape and portrait orientations', () => {
