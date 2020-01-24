@@ -1,3 +1,6 @@
+# ignore possible temporary test files
+test/.temp
+
 ### OSX  and editor cruft###
 .DS_Store
 .AppleDouble
