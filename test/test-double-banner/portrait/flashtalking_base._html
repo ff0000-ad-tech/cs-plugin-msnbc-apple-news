@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="initial-scale = 1.0,maximum-scale = 1.0" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta content="utf-8" http-equiv="encoding">	
+	<!-- Template: FT-BaseLoad-Index, v1.1 -->
+	<style>
+		html, body {
+			margin: 0;
+		}
+		/*-- Red.Component.ft_head_style.start --*/
+		#richload-base {
+			width: 300px;
+			height: 600px;
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+		/*-- Red.Component.ft_head_style.end --*/
+	</style>
+</head>
+
+<body>
+	<!-- Red.Component.ft_body_dom.start -->
+	<ft-richload name="richloadBase" id="richload-base"></ft-richload>
+	<!-- Red.Component.ft_body_dom.end -->
+
+	<script src="https://cdn.flashtalking.com/frameworks/js/api/2/10/html5API_applenews.js"></script>
+	<script>
+	var myFT = new FT;
+
+	/*-- Red.Component.ft_body_script.start --*/
+	/*-- Red.Component.ft_body_script.end --*/
+	</script>
+</body>
+</html>
