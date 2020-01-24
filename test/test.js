@@ -43,9 +43,12 @@ describe('Apple News Ad Packaging', () => {
 					const resultOrientationPath = path.resolve(TEMP_DIR_NAME, standardArgs.creativeType, orientation)
 					const readResults = await Promise.all([fsp.readdir(originalSizePath), fsp.readdir(resultOrientationPath)])
 
-					const orientationFiles = readResults[0]
-					const originalSizeFiles = readResults[1]
-					expect(orientationFiles).toEqual(expect.arrayContaining(originalSizeFiles))
+					let [orientationFiles, originalSizeFiles] = readResults
+
+					orientationFiles = sanitizeDirFiles(orientationFiles)
+					originalSizeFiles = sanitizeDirFiles(originalSizeFiles)
+
+					expect(originalSizeFiles).toMatchObject(orientationFiles)
 				}
 
 				const testPromises = ['landscape', 'portrait'].map(orientation => checkForAssetsInOrientation(orientation))
@@ -60,8 +63,20 @@ describe('Apple News Ad Packaging', () => {
 	})
 
 	describe('Required options', () => {
-		const testMissingOpt = createMissingOptTester(standardArgs)
+		function createMissingOptTester(opts) {
+			return function testMissingOpt(missingOptKey) {
+				test(missingOptKey, () => {
+					expect.assertions(1)
+					const _opts = _.cloneDeep(opts)
+					delete _opts[missingOptKey]
+					return packageAppleNews(_opts).catch(err => {
+						expect(err).toBeTruthy()
+					})
+				})
+			}
+		}
 
+		const testMissingOpt = createMissingOptTester(standardArgs)
 		testMissingOpt('targetDir')
 		testMissingOpt('creativeType')
 		testMissingOpt('orientationsToSizePaths')
@@ -94,15 +109,7 @@ describe('Apple News Ad Packaging', () => {
 	// )
 })
 
-function createMissingOptTester(opts) {
-	return function testMissingOpt(missingOptKey) {
-		test(missingOptKey, () => {
-			expect.assertions(1)
-			const _opts = _.cloneDeep(opts)
-			delete _opts[missingOptKey]
-			return packageAppleNews(_opts).catch(err => {
-				expect(err).toBeTruthy()
-			})
-		})
-	}
+const IGNORED_FILES = ['.DS_Store']
+function sanitizeDirFiles(dirFiles) {
+	return dirFiles.filter(file => !IGNORED_FILES.includes(file))
 }
