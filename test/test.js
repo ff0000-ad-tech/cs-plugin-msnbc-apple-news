@@ -26,42 +26,6 @@ describe('Apple News Ad Packaging', () => {
 		}
 	}
 
-	describe('Standard case', () => {
-		beforeAll(() => {
-			return packageAppleNews(standardArgs)
-		})
-
-		describe('Ad file structure', () => {
-			test('creates a directory based on creativeType', async () => {
-				await fsp.stat(path.resolve(TEMP_DIR_NAME, standardArgs.creativeType))
-			})
-
-			test('size files copied over to respective orientation', async () => {
-				async function checkForAssetsInOrientation(orientation) {
-					const size = orientation === 'landscape' ? landscapeSize : portraitSize
-					const originalSizePath = path.resolve(FIXTURES_PATH, size)
-					const resultOrientationPath = path.resolve(TEMP_DIR_NAME, standardArgs.creativeType, orientation)
-					const readResults = await Promise.all([fsp.readdir(originalSizePath), fsp.readdir(resultOrientationPath)])
-
-					let [orientationFiles, originalSizeFiles] = readResults
-
-					orientationFiles = sanitizeDirFiles(orientationFiles)
-					originalSizeFiles = sanitizeDirFiles(originalSizeFiles)
-
-					expect(originalSizeFiles).toMatchObject(orientationFiles)
-				}
-
-				const testPromises = ['landscape', 'portrait'].map(orientation => checkForAssetsInOrientation(orientation))
-				await Promise.all(testPromises)
-			})
-		})
-
-		describe('Template rendering', () => {
-			test.todo('uses template listed in options')
-			test.todo('renders creative name in template')
-		})
-	})
-
 	describe('Required options', () => {
 		function createMissingOptTester(opts) {
 			return function testMissingOpt(missingOptKey) {
@@ -98,6 +62,52 @@ describe('Apple News Ad Packaging', () => {
 
 		testMissingOrientation('landscape', 'portrait', portraitSize)
 		testMissingOrientation('portrait', 'landscape', landscapeSize)
+	})
+
+	describe('Standard case', () => {
+		beforeAll(() => {
+			return packageAppleNews(standardArgs)
+		})
+
+		describe('Ad file structure', () => {
+			test('creates a directory based on creativeType', async () => {
+				await fsp.stat(path.resolve(TEMP_DIR_NAME, standardArgs.creativeType))
+			})
+
+			test('size files copied over to respective orientation', async () => {
+				async function checkForAssetsInOrientation(orientation) {
+					const size = orientation === 'landscape' ? landscapeSize : portraitSize
+					const originalSizePath = path.resolve(FIXTURES_PATH, size)
+					const resultOrientationPath = path.resolve(TEMP_DIR_NAME, standardArgs.creativeType, orientation)
+					const readResults = await Promise.all([fsp.readdir(originalSizePath), fsp.readdir(resultOrientationPath)])
+
+					let [orientationFiles, originalSizeFiles] = readResults
+
+					orientationFiles = sanitizeDirFiles(orientationFiles)
+					originalSizeFiles = sanitizeDirFiles(originalSizeFiles)
+
+					expect(originalSizeFiles).toMatchObject(orientationFiles)
+				}
+
+				const testPromises = ['landscape', 'portrait'].map(orientation => checkForAssetsInOrientation(orientation))
+				await Promise.all(testPromises)
+			})
+		})
+
+		describe('Template rendering', () => {
+			test.todo('uses template listed in options')
+			test.todo('renders creative name in template')
+			test.todo('renders clicktag in template')
+			test.todo('renders size strs (e.g. 300x250) in template')
+			test.todo('Removes HTML comments')
+			test.todo('Removes JS comments')
+
+			/**
+			 * Other requirements that are hard to test:
+			 * - templates are linted
+			 * - output is minified
+			 */
+		})
 	})
 
 	// tear down temporary directory
