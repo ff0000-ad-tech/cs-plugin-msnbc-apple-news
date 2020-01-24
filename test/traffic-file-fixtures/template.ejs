@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="initial-scale=1,maximum-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta content="utf-8" http-equiv="encoding">
+	<title><% creativeType %></title>
+	<script>
+		var clickTag = <% clickTag %>
+		var TEST_VAR
+	</script>
+	<style type="text/css">
+	  body {
+			margin: 0;
+		}
+
+		#iframe, #clickthrough {
+			position: absolute;
+			width: 100%;
+			height: 100vh;
+		}
+
+		#clickthrough {
+			display: block;
+		}
+	</style>
+</head>
+
+<body>
+	<iframe id="iframe"></iframe>
+	<a id="clickthrough" href="https://www.msnbc.com"></a>
+	<script type="text/javascript">
+		var iframe = document.getElementById('iframe');
+		var anchor = document.getElementById('clickthrough');
+
+		// TODO: templatize condition as well?
+		function inLandscape() {
+			return window.innerWidth >= 667;
+		}
+
+		iframe.src = inLandscape() ? "landscape" : "portrait";
+
+		window.addEventListener('message', function(event) {
+			var data = event.data;
+			if (data && data.type === 'UPDATE_CLICKTAG') {
+				anchor.href = data.message;
+			}
+		})
+	</script>
+	<!-- test html comment -->
+</body>
+
+</html>
