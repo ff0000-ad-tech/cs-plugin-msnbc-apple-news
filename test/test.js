@@ -2,14 +2,16 @@ const fs = require('fs')
 const fsp = fs.promises
 const path = require('path')
 const rimraf = require('rimraf')
+
 const { packageAppleNews } = require('../lib/package-apple-news')
+const { ensureDir } = require('../lib/utils')
 
 const TEMP_DIR_NAME = path.resolve('test', '.temp')
 const FIXTURES_PATH = path.resolve('test', 'traffic-file-fixtures')
 
 describe('Apple News Ad Packaging', () => {
 	// set up temporary directory
-	beforeAll(() => fsp.mkdir(TEMP_DIR_NAME))
+	beforeAll(() => ensureDir(TEMP_DIR_NAME))
 
 	describe('Standard case', () => {
 		const landscapeSize = '2208x212'
@@ -32,12 +34,16 @@ describe('Apple News Ad Packaging', () => {
 		})
 
 		describe('In each size:', () => {
-			test('Size-specific assets copied over', async () => {
-				function checkForAssetsInOrientation(orientation) {
+			test('Sizes copied over', async () => {
+				async function checkForAssetsInOrientation(orientation) {
+					const size = orientation === 'landscape' ? landscapeSize : portraitSize
+					const originalSizePath = path.resolve(FIXTURES_PATH, size)
 					const resultOrientationPath = path.resolve(TEMP_DIR_NAME, standardArgs.creativeType, orientation)
-					return fsp.readdir(resultOrientationPath).then(orientationFiles => {
-						expect(orientationFiles).toEqual(expect.arrayContaining(['build.bundle.js', 'backup.jpg', 'fba-payload.png']))
-					})
+					const readResults = await Promise.all([fsp.readdir(originalSizePath), fsp.readdir(resultOrientationPath)])
+
+					const orientationFiles = readResults[0]
+					const originalSizeFiles = readResults[1]
+					expect(orientationFiles).toEqual(expect.arrayContaining(originalSizeFiles))
 				}
 
 				const testPromises = ['landscape', 'portrait'].map(orientation => checkForAssetsInOrientation(orientation))
