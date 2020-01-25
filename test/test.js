@@ -3,6 +3,7 @@ const fsp = fs.promises
 const path = require('path')
 const rimraf = require('rimraf')
 const _ = require('lodash')
+const cheerio = require('cheerio')
 
 const { packageAppleNews } = require('../lib/package-apple-news')
 const { ensureDir } = require('../lib/utils')
@@ -19,12 +20,14 @@ describe('Apple News Ad Packaging', () => {
 	const standardArgs = {
 		targetDir: TEMP_DIR_NAME,
 		creativeType: 'DoubleBanner',
-		templatePath: path.resolve('../templates/double-banner.ejs'),
+		templatePath: path.resolve(FIXTURES_PATH, 'template.ejs'),
 		orientationsToSizePaths: {
 			landscape: path.resolve(FIXTURES_PATH, landscapeSize),
 			portrait: path.resolve(FIXTURES_PATH, portraitSize)
 		}
 	}
+
+	const expectedCreativePath = path.resolve(TEMP_DIR_NAME, standardArgs.creativeType)
 
 	describe('Required options', () => {
 		function createMissingOptTester(opts) {
@@ -71,7 +74,7 @@ describe('Apple News Ad Packaging', () => {
 
 		describe('Ad file structure', () => {
 			test('creates a directory based on creativeType', async () => {
-				await fsp.stat(path.resolve(TEMP_DIR_NAME, standardArgs.creativeType))
+				await fsp.stat(expectedCreativePath)
 			})
 
 			test('size files copied over to respective orientation', async () => {
@@ -95,8 +98,25 @@ describe('Apple News Ad Packaging', () => {
 		})
 
 		describe('Template rendering', () => {
-			test.todo('uses template listed in options')
-			test.todo('renders creative name in template')
+			let readOutput, $
+
+			test('renders an index.html file', async () => {
+				readOutput = await fsp.readFile(path.resolve(expectedCreativePath, 'index.html'))
+				readOutput = readOutput.toString()
+				$ = cheerio.load(readOutput)
+			})
+
+			test('uses template listed in options', () => {
+				// check if TEST_VAR in template stays
+				expect(readOutput.includes('TEST_VAR')).toBe(true)
+			})
+
+			test('renders creative name in template as title', () => {
+				// TODO: learn how to check if elem exists or not w/ Cheerio
+				const res = $('title')
+				expect(res).toBeTruthy()
+			})
+
 			test.todo('renders clicktag in template')
 			test.todo('renders size strs (e.g. 300x250) in template')
 			test.todo('Removes HTML comments')
