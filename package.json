@@ -25,6 +25,7 @@
 	"dependencies": {
 		"@ff0000-ad-tech/debug": "latest",
 		"@ff0000-ad-tech/hooks-regex": "^1.0.2",
+		"cheerio": "^1.0.0-rc.3",
 		"dotenv": "^6.1.0",
 		"ejs": "^3.0.1",
 		"fs-extra": "^5.0.0",
