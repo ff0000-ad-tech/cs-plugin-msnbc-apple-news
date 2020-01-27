@@ -20,7 +20,7 @@ describe('Apple News Ad Packaging', () => {
 	const standardArgs = {
 		targetDir: TEMP_DIR_NAME,
 		creativeType: 'DoubleBanner',
-		templatePath: path.resolve('templates', 'double-banner.ejs'),
+		templatePath: path.resolve('templates', 'template.ejs'),
 		templateVars: {
 			clickTag: 'clicktag.com'
 		},
