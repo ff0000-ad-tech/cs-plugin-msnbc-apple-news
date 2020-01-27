@@ -20,7 +20,7 @@ describe('Apple News Ad Packaging', () => {
 	const standardArgs = {
 		targetDir: TEMP_DIR_NAME,
 		creativeType: 'DoubleBanner',
-		templatePath: path.resolve(FIXTURES_PATH, 'template.ejs'),
+		templatePath: path.resolve('templates', 'double-banner.ejs'),
 		templateVars: {
 			clickTag: 'clicktag.com'
 		},
@@ -108,10 +108,6 @@ describe('Apple News Ad Packaging', () => {
 				$ = cheerio.load(readOutput)
 			})
 
-			test('uses template listed in options', () => {
-				expect(readOutput.includes('TEST_VAR')).toBe(true)
-			})
-
 			test('renders clickTag in template', () => {
 				expect(readOutput.includes(standardArgs.templateVars.clickTag)).toBe(true)
 			})
@@ -121,21 +117,20 @@ describe('Apple News Ad Packaging', () => {
 				expect(titleText).toBe(standardArgs.creativeType)
 			})
 
-			/**
-			 * Other requirements that are hard to test:
-			 * - templates are linted
-			 * - output is minified
-			 */
+			test('output is minified', () => {
+				// heuristic: checking if rendered HTML only on 1 line
+				expect(readOutput.includes('\n')).toBe(false)
+			})
 		})
 	})
 
 	// tear down temporary directory
-	// afterAll(
-	// 	() =>
-	// 		new Promise(resolve => {
-	// 			rimraf(TEMP_DIR_NAME, resolve)
-	// 		})
-	// )
+	afterAll(
+		() =>
+			new Promise(resolve => {
+				rimraf(TEMP_DIR_NAME, resolve)
+			})
+	)
 })
 
 const IGNORED_FILES = ['.DS_Store']
