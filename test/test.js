@@ -21,6 +21,9 @@ describe('Apple News Ad Packaging', () => {
 		targetDir: TEMP_DIR_NAME,
 		creativeType: 'DoubleBanner',
 		templatePath: path.resolve(FIXTURES_PATH, 'template.ejs'),
+		templateVars: {
+			clickTag: 'clicktag.com'
+		},
 		orientationsToSizePaths: {
 			landscape: path.resolve(FIXTURES_PATH, landscapeSize),
 			portrait: path.resolve(FIXTURES_PATH, portraitSize)
@@ -101,26 +104,22 @@ describe('Apple News Ad Packaging', () => {
 			let readOutput, $
 
 			test('renders an index.html file', async () => {
-				readOutput = await fsp.readFile(path.resolve(expectedCreativePath, 'index.html'))
-				readOutput = readOutput.toString()
+				readOutput = await fsp.readFile(path.resolve(expectedCreativePath, 'index.html'), 'utf8')
 				$ = cheerio.load(readOutput)
 			})
 
 			test('uses template listed in options', () => {
-				// check if TEST_VAR in template stays
 				expect(readOutput.includes('TEST_VAR')).toBe(true)
 			})
 
-			test('renders creative name in template as title', () => {
-				// TODO: learn how to check if elem exists or not w/ Cheerio
-				const res = $('title')
-				expect(res).toBeTruthy()
+			test('renders clickTag in template', () => {
+				expect(readOutput.includes(standardArgs.templateVars.clickTag)).toBe(true)
 			})
 
-			test.todo('renders clicktag in template')
-			test.todo('renders size strs (e.g. 300x250) in template')
-			test.todo('Removes HTML comments')
-			test.todo('Removes JS comments')
+			test('renders creative name in template as title', () => {
+				const titleText = $('title').text()
+				expect(titleText).toBe(standardArgs.creativeType)
+			})
 
 			/**
 			 * Other requirements that are hard to test:
