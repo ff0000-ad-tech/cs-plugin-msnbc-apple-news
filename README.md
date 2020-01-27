@@ -10,3 +10,16 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
 # Creative Server Plugin - Apply Network
+
+This plugin is to assist with building ads to deploy on Apple News.
+This means that they must resize to the size associated with the Apple device and orientation defined by the [Apple News HTML spec](https://developer.apple.com/news-publisher/News-Ad-Specifications.pdf).				
+
+There are two main Apple News sizes: the **Double Banner** and the **Large Banner**.
+
+For both, you would choose two sizes to designate as either the **Landscape** or **Portrait** creative.
+
+Then the Apple News ad will use the size appropriate for the given device and orientation.
+
+## Usage
+
+TODO
