@@ -21,9 +21,7 @@ describe('Apple News Ad Packaging', () => {
 		targetDir: TEMP_DIR_NAME,
 		creativeType: 'DoubleBanner',
 		templatePath: path.resolve('templates', 'template.ejs'),
-		templateVars: {
-			clickTag: 'clicktag.com'
-		},
+		clickTag: 'clicktag.com',
 		orientationsToSizePaths: {
 			landscape: path.resolve(FIXTURES_PATH, landscapeSize),
 			portrait: path.resolve(FIXTURES_PATH, portraitSize)
@@ -109,7 +107,7 @@ describe('Apple News Ad Packaging', () => {
 			})
 
 			test('renders clickTag in template', () => {
-				expect(readOutput.includes(standardArgs.templateVars.clickTag)).toBe(true)
+				expect(readOutput.includes(standardArgs.clickTag)).toBe(true)
 			})
 
 			test('renders creative name in template as title', () => {
