@@ -1,24 +1,42 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Apply Network</title>
+		<title>MSNBC Apple News</title>
 		<link rel="stylesheet" href="./style.css" />
 	</head>
 	<body>
-		<div>
-			<h1>Apply Network</h1>
-			<h3>Index List</h3>
-			<form id="index-form">
-				<ul id="index-list"></ul>
-			</form>
+		<h1>Apple News Responsive Ad Builder<a
+			href="https://github.com/ff0000-ad-tech/cs-plugin-msnbc-apple-news" target="_blank" class="tooltip"
+		>?</a>
+		</h1>
+		<form id="main-form">
 
-			<h3>Network Options</h3>
-			<form id="network-form">
-				<ul id="network-list"></ul>
-
-				<button type="submit" disabled>Create Index</button>
-			</form>
-		</div>
+			<div class="input-line">
+				<label for="creative-type-input">Creative Type</label>
+				<input id="creative-type-input" type="text">
+			</div>
+			<div class="input-line">
+				<label for="landscape-select">Landscape Size</label>
+				<select id="landscape-select">
+					<option value="">Choose ad size</option>
+				</select>
+			</div>
+			<div class="input-line">
+				<label for="portrait-select">Portrait Size</label>
+				<select id="portrait-select">
+					<option value="">Choose ad size</option>
+				</select>
+			</div>
+			<div class="input-line">
+				<label for="default-clicktag-input">Default Clicktag</label>
+				<input id="default-clicktag-input" type="text">
+			</div>
+			<div class="input-line">
+				<label for="minify-checkbox">Minify ad index.html?</label>
+				<input id="minify-checkbox" class="checkbox" type="checkbox" checked>
+			</div>
+			<button type="submit" class="submit-btn" disabled>Render Ad</button>
+		</form>
 		<script src="./bundle.js"></script>
 	</body>
 </html>

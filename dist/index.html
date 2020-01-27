@@ -5,15 +5,38 @@
 		<link rel="stylesheet" href="./style.css" />
 	</head>
 	<body>
-		<div>
-			<h1>MSNBC Apple News</h1>
-			<h3>Context</h3>
-			<p>
-				This plugin is to assist with building ads to deploy on Apple News.
-				This means that they must resize to the size associated with the Apple device and orientation defined by the Apple News HTML spec (link here).				
-				There are two main Apple News sizes: the Double Banner and the Large Banner.
-				For both, you would choose two sizes to designate as either the Landscape or Portrait creative.
-				Then the Apple News will use the creative appropriate for the phone's orientation.
-			</p>
+		<h1>Apple News Responsive Ad Builder<a
+			href="https://github.com/ff0000-ad-tech/cs-plugin-msnbc-apple-news" target="_blank" class="tooltip"
+		>?</a>
+		</h1>
+		<form id="main-form">
+
+			<div class="input-line">
+				<label for="creative-type-input">Creative Type</label>
+				<input id="creative-type-input" type="text">
+			</div>
+			<div class="input-line">
+				<label for="landscape-select">Landscape Size</label>
+				<select id="landscape-select">
+					<option value="">Choose ad size</option>
+				</select>
+			</div>
+			<div class="input-line">
+				<label for="portrait-select">Portrait Size</label>
+				<select id="portrait-select">
+					<option value="">Choose ad size</option>
+				</select>
+			</div>
+			<div class="input-line">
+				<label for="default-clicktag-input">Default Clicktag</label>
+				<input id="default-clicktag-input" type="text">
+			</div>
+			<div class="input-line">
+				<label for="minify-checkbox">Minify ad index.html?</label>
+				<input id="minify-checkbox" class="checkbox" type="checkbox" checked>
+			</div>
+			<button type="submit" class="submit-btn" disabled>Render Ad</button>
+		</form>
+		<script src="./bundle.js"></script>
 	</body>
 </html>
