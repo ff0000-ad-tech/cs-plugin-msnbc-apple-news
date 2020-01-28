@@ -91,14 +91,17 @@ button {
 	line-height: 1.5rem;
 }
 
-.input-line :first-child {
+.input-line label:first-child {
 	width: 40%;
 	text-align: right;
 	margin: 0 10px;
 }
 
+.radio-container {
+	text-align: left;
+}
+
 .tooltip {
-	margin: 0 3px;
 	color: #ddd;
 	font-size: 0.8rem;
 	text-decoration: none;

@@ -2314,7 +2314,7 @@ var query = Object(ad_global__WEBPACK_IMPORTED_MODULE_1__["getQueryParams"])();
 query.targets = JSON.parse(query.targets);
 query.folders = JSON.parse(query.folders);
 console.log('query', query);
-var form;
+var form, submitBtn;
 var sizesToTargets = {};
 var textInputs = {};
 var checkboxInputs = {};
@@ -2336,10 +2336,12 @@ function init() {
   textInputs['default-clicktag-input'].value = 'http://msnbc.com'; // add form handlers
 
   setFormListeners();
+  validateForm();
 }
 
 function processDOM() {
-  form = document.getElementById('main-form'); // process diff form inputs
+  form = document.getElementById('main-form');
+  submitBtn = document.getElementById('submit-btn'); // process diff form inputs
 
   for (var i = 0; i < form.elements.length; i++) {
     var input = form.elements[i];
@@ -2369,7 +2371,13 @@ function populateSizeSelect(selectEl, sizesToTargets) {
 }
 
 function setFormListeners() {
+  var inputs = Object.values(textInputs).concat(Object.values(selects));
   setCreativeTypeListeners();
+  inputs.forEach(function (input) {
+    input.addEventListener('input', function (event) {
+      submitBtn.disabled = !validateForm();
+    });
+  });
 }
 
 function setCreativeTypeListeners() {
@@ -2394,7 +2402,30 @@ function setCreativeTypeListeners() {
   });
 }
 
-function validateForm() {}
+function validateForm() {
+  var inputs = Object.values(textInputs).concat(Object.values(selects));
+
+  for (var _iterator = inputs, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator]();;) {
+    var _ref;
+
+    if (_isArray) {
+      if (_i >= _iterator.length) break;
+      _ref = _iterator[_i++];
+    } else {
+      _i = _iterator.next();
+      if (_i.done) break;
+      _ref = _i.value;
+    }
+
+    var input = _ref;
+
+    if (!input.value) {
+      return false;
+    }
+  }
+
+  return true;
+}
 
 function submitForm(event) {
   event.preventDefault();

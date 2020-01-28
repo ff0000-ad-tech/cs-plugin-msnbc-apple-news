@@ -7,7 +7,7 @@ query.folders = JSON.parse(query.folders)
 
 console.log('query', query)
 
-let form
+let form, submitBtn
 const sizesToTargets = {}
 const textInputs = {}
 const checkboxInputs = {}
@@ -36,10 +36,14 @@ function init() {
 
 	// add form handlers
 	setFormListeners()
+
+	validateForm()
 }
 
 function processDOM() {
 	form = document.getElementById('main-form')
+	submitBtn = document.getElementById('submit-btn')
+
 	// process diff form inputs
 	for (let i = 0; i < form.elements.length; i++) {
 		const input = form.elements[i]
@@ -68,7 +72,15 @@ function populateSizeSelect(selectEl, sizesToTargets) {
 }
 
 function setFormListeners() {
+	const inputs = Object.values(textInputs).concat(Object.values(selects))
+
 	setCreativeTypeListeners()
+
+	inputs.forEach(input => {
+		input.addEventListener('input', event => {
+			submitBtn.disabled = !validateForm()
+		})
+	})
 }
 
 function setCreativeTypeListeners() {
@@ -94,7 +106,16 @@ function setCreativeTypeListeners() {
 	})
 }
 
-function validateForm() {}
+function validateForm() {
+	const inputs = Object.values(textInputs).concat(Object.values(selects))
+
+	for (let input of inputs) {
+		if (!input.value) {
+			return false
+		}
+	}
+	return true
+}
 
 function submitForm(event) {
 	event.preventDefault()
