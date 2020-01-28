@@ -2403,6 +2403,10 @@ function setCreativeTypeListeners() {
 }
 
 function validateForm() {
+  if (form.reportValidity) {
+    return form.reportValidity();
+  }
+
   var inputs = Object.values(textInputs).concat(Object.values(selects));
 
   for (var _iterator = inputs, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator]();;) {

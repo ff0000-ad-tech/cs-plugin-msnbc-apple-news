@@ -107,6 +107,10 @@ function setCreativeTypeListeners() {
 }
 
 function validateForm() {
+	if (form.reportValidity) {
+		return form.reportValidity()
+	}
+
 	const inputs = Object.values(textInputs).concat(Object.values(selects))
 
 	for (let input of inputs) {
