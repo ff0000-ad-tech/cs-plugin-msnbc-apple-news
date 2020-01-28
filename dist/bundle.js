@@ -2332,9 +2332,10 @@ function init() {
   Object.values(selects).forEach(function (selectEl) {
     populateSizeSelect(selectEl, sizesToTargets);
   }); // populate default clickTag
-  // TODO: populate from API
 
-  textInputs['default-clicktag-input'].value = 'http://msnbc.com';
+  textInputs['default-clicktag-input'].value = 'http://msnbc.com'; // add form handlers
+
+  setFormListeners();
 }
 
 function processDOM() {
@@ -2366,6 +2367,34 @@ function populateSizeSelect(selectEl, sizesToTargets) {
   });
   return sizeEls;
 }
+
+function setFormListeners() {
+  setCreativeTypeListeners();
+}
+
+function setCreativeTypeListeners() {
+  var creativeTypeInput = textInputs['creative-type-input'];
+  var radioInputs = Array.prototype.slice.call(document.querySelectorAll('input[type="radio"]')); // TODO: checking radio populates creative input with its value
+
+  radioInputs.forEach(function (radio, i) {
+    var otherRadios = Array.prototype.filter.call(radioInputs, function (_, j) {
+      return i !== j;
+    });
+    radio.addEventListener('input', function (event) {
+      creativeTypeInput.value = radio.value;
+      otherRadios.forEach(function (otherRadio) {
+        otherRadio.checked = false;
+      });
+    });
+  });
+  creativeTypeInput.addEventListener('input', function (event) {
+    radioInputs.forEach(function (radio) {
+      radio.checked = creativeTypeInput.value.trim() === radio.value;
+    });
+  });
+}
+
+function validateForm() {}
 
 function submitForm(event) {
   event.preventDefault();

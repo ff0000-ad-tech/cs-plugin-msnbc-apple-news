@@ -5,15 +5,25 @@
 		<link rel="stylesheet" href="./style.css" />
 	</head>
 	<body>
-		<h1>Apple News Responsive Ad Builder<a
+		<h1>Apple News Responsive Ad Builder <a
 			href="https://github.com/ff0000-ad-tech/cs-plugin-msnbc-apple-news" target="_blank" class="tooltip"
-		>?</a>
+		>[?]</a>
 		</h1>
 		<h3>Ad Options</h3>
 		<form id="main-form">
 			<div class="input-line">
 				<label for="creative-type-input">Creative Type</label>
-				<input id="creative-type-input" type="text">
+				<div id="creative-type-inputs" class="creative-type-input__radio">
+					<input id="creative-type-input" type="text">
+					<div class="radio-container">
+						<input type="radio" id="double-radio" value="DoubleBanner">
+						<label for="double-radio">DoubleBanner</label>
+					</div>
+					<div class="radio-container">
+						<input type="radio" id="large-radio" value="LargeBanner">
+						<label for="large-radio">LargeBanner</label>
+					</div>
+				</div>
 			</div>
 			<div class="input-line">
 				<label for="landscape-select">Landscape Size</label>

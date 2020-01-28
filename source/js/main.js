@@ -32,8 +32,10 @@ function init() {
 	})
 
 	// populate default clickTag
-	// TODO: populate from API
 	textInputs['default-clicktag-input'].value = 'http://msnbc.com'
+
+	// add form handlers
+	setFormListeners()
 }
 
 function processDOM() {
@@ -64,6 +66,35 @@ function populateSizeSelect(selectEl, sizesToTargets) {
 	})
 	return sizeEls
 }
+
+function setFormListeners() {
+	setCreativeTypeListeners()
+}
+
+function setCreativeTypeListeners() {
+	const creativeTypeInput = textInputs['creative-type-input']
+	const radioInputs = Array.prototype.slice.call(document.querySelectorAll('input[type="radio"]'))
+
+	// TODO: checking radio populates creative input with its value
+	radioInputs.forEach((radio, i) => {
+		const otherRadios = Array.prototype.filter.call(radioInputs, (_, j) => i !== j)
+
+		radio.addEventListener('input', event => {
+			creativeTypeInput.value = radio.value
+			otherRadios.forEach(otherRadio => {
+				otherRadio.checked = false
+			})
+		})
+	})
+
+	creativeTypeInput.addEventListener('input', event => {
+		radioInputs.forEach(radio => {
+			radio.checked = creativeTypeInput.value.trim() === radio.value
+		})
+	})
+}
+
+function validateForm() {}
 
 function submitForm(event) {
 	event.preventDefault()
