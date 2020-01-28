@@ -2311,6 +2311,61 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var query = Object(ad_global__WEBPACK_IMPORTED_MODULE_1__["getQueryParams"])();
+query.targets = JSON.parse(query.targets);
+query.folders = JSON.parse(query.folders);
+console.log('query', query);
+var form;
+var sizesToTargets = {};
+var textInputs = {};
+var checkboxInputs = {};
+var selects = {};
+init(); //
+
+function init() {
+  processDOM(); // parse sizes
+
+  Object.keys(query.targets).forEach(function (target) {
+    var size = target.match(/\d+x\d+/)[0];
+    sizesToTargets[size] = target;
+  }); // populate size options
+
+  Object.values(selects).forEach(function (selectEl) {
+    populateSizeSelect(selectEl, sizesToTargets);
+  }); // populate default clickTag
+  // TODO: populate from API
+
+  textInputs['default-clicktag-input'].value = 'http://msnbc.com';
+}
+
+function processDOM() {
+  form = document.getElementById('main-form'); // process diff form inputs
+
+  for (var i = 0; i < form.elements.length; i++) {
+    var input = form.elements[i];
+
+    if (input instanceof HTMLInputElement) {
+      if (input.type === 'checkbox') {
+        checkboxInputs[input.id] = input;
+      } else {
+        textInputs[input.id] = input;
+      }
+    } else if (input instanceof HTMLSelectElement) {
+      selects[input.id] = input;
+    }
+  }
+}
+
+function populateSizeSelect(selectEl, sizesToTargets) {
+  var sizes = Object.keys(sizesToTargets);
+  var sizeEls = sizes.map(function (size) {
+    var target = sizesToTargets[size];
+    var opt = document.createElement('option');
+    opt.value = target;
+    opt.innerText = size;
+    selectEl.appendChild(opt);
+  });
+  return sizeEls;
+}
 
 function submitForm(event) {
   event.preventDefault();

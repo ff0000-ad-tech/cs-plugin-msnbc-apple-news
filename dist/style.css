@@ -55,7 +55,6 @@ ul#index-list li label {
 input[type='text'] {
 	width: 30em;
 	padding: 0.3em;
-	text-align: center;
 }
 input[type='text'].clash {
 	border: 1px solid red;
@@ -86,6 +85,7 @@ button {
 .input-line {
 	display: -webkit-flex;
 	display: flex;
+	align-items: center;
 	width: 90%;
 	margin: 5px auto;
 	line-height: 1.5rem;
@@ -95,18 +95,6 @@ button {
 	width: 40%;
 	text-align: right;
 	margin: 0 10px;
-}
-
-.input-line select {
-	height: 1.5rem;
-}
-
-.input-line .checkbox {
-	height: 1.2rem;
-}
-
-.submit-btn {
-	margin: 10px;
 }
 
 .tooltip {
