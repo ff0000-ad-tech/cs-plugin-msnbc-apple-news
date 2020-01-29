@@ -23,7 +23,7 @@ function init() {
 	// parse sizes
 	Object.keys(query.targets).forEach(target => {
 		const size = target.match(/\d+x\d+/)[0]
-		sizesToTargets[size] = target
+		sizesToTargets[size] = query.targets[target]
 	})
 
 	// populate size options
@@ -64,8 +64,7 @@ function populateSizeSelect(selectEl, sizesToTargets) {
 	const sizeEls = sizes.map(size => {
 		const target = sizesToTargets[size]
 		const opt = document.createElement('option')
-		opt.value = target
-		opt.innerText = size
+		opt.value = opt.innerText = size
 		selectEl.appendChild(opt)
 	})
 	return sizeEls
@@ -81,6 +80,8 @@ function setFormListeners() {
 			submitBtn.disabled = !validateForm()
 		})
 	})
+
+	form.addEventListener('submit', submitForm)
 }
 
 function setCreativeTypeListeners() {
@@ -123,4 +124,41 @@ function validateForm() {
 
 function submitForm(event) {
 	event.preventDefault()
+
+	const data = {
+		action: 'render',
+		...constructData()
+	}
+
+	superagent
+		.post('/@ff0000-ad-tech/cs-plugin-msnbc-apple-news/api/')
+		.send(data)
+		.end((err, res) => {
+			if (err) {
+				return alert(`Submit error: ${err}`)
+			}
+			alert('Ads successfully built. Returning to Creative Server...')
+			location.href = query.api.replace('/api', '/app')
+		})
+
+	return false
+}
+
+function constructData() {
+	const landscapeSize = selects['landscape-select'].value
+	const portraitSize = selects['portrait-select'].value
+	const landscapePath = sizesToTargets[landscapeSize]
+	const portraitPath = sizesToTargets[portraitSize]
+
+	const data = {
+		creativeType: textInputs['creative-type-input'].value,
+		clickTag: textInputs['default-clicktag-input'].value,
+		orientationsToSizePaths: {
+			landscape: `${query.context}${landscapePath}`,
+			portrait: `${query.context}${portraitPath}`
+		},
+		minify: checkboxInputs['minify-checkbox'].value
+	}
+
+	return data
 }

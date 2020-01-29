@@ -2308,6 +2308,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var superagent__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! superagent */ "./node_modules/superagent/lib/client.js");
 /* harmony import */ var superagent__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(superagent__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var ad_global__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ad-global */ "./node_modules/@ff0000-ad-tech/ad-global/src/ad-global.js");
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 var query = Object(ad_global__WEBPACK_IMPORTED_MODULE_1__["getQueryParams"])();
@@ -2326,7 +2330,7 @@ function init() {
 
   Object.keys(query.targets).forEach(function (target) {
     var size = target.match(/\d+x\d+/)[0];
-    sizesToTargets[size] = target;
+    sizesToTargets[size] = query.targets[target];
   }); // populate size options
 
   Object.values(selects).forEach(function (selectEl) {
@@ -2363,8 +2367,7 @@ function populateSizeSelect(selectEl, sizesToTargets) {
   var sizeEls = sizes.map(function (size) {
     var target = sizesToTargets[size];
     var opt = document.createElement('option');
-    opt.value = target;
-    opt.innerText = size;
+    opt.value = opt.innerText = size;
     selectEl.appendChild(opt);
   });
   return sizeEls;
@@ -2378,6 +2381,7 @@ function setFormListeners() {
       submitBtn.disabled = !validateForm();
     });
   });
+  form.addEventListener('submit', submitForm);
 }
 
 function setCreativeTypeListeners() {
@@ -2433,6 +2437,37 @@ function validateForm() {
 
 function submitForm(event) {
   event.preventDefault();
+
+  var data = _objectSpread({
+    action: 'render'
+  }, constructData());
+
+  superagent__WEBPACK_IMPORTED_MODULE_0___default.a.post('/@ff0000-ad-tech/cs-plugin-msnbc-apple-news/api/').send(data).end(function (err, res) {
+    if (err) {
+      return alert("Submit error: " + err);
+    }
+
+    alert('Ads successfully built. Returning to Creative Server...');
+    location.href = query.api.replace('/api', '/app');
+  });
+  return false;
+}
+
+function constructData() {
+  var landscapeSize = selects['landscape-select'].value;
+  var portraitSize = selects['portrait-select'].value;
+  var landscapePath = sizesToTargets[landscapeSize];
+  var portraitPath = sizesToTargets[portraitSize];
+  var data = {
+    creativeType: textInputs['creative-type-input'].value,
+    clickTag: textInputs['default-clicktag-input'].value,
+    orientationsToSizePaths: {
+      landscape: "" + query.context + landscapePath,
+      portrait: "" + query.context + portraitPath
+    },
+    minify: checkboxInputs['minify-checkbox'].value
+  };
+  return data;
 }
 
 /***/ })
