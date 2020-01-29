@@ -3,7 +3,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const dotenv = require('dotenv').config()
 const isProduction = process.env.NODE_ENV === 'production'
 const debug = require('@ff0000-ad-tech/debug')
-const log = debug('cs-plugin-apply-network: webpack')
+const log = debug('cs-plugin-msnbc-apple-news: webpack')
 log('isProduction:', isProduction)
 // const TARGET_DEV_PATH = dotenv.parsed.TARGET_DEV_PATH
 const PATHS = {
