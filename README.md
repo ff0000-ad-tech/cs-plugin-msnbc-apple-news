@@ -20,6 +20,23 @@ For both, you would choose two sizes to designate as either the **Landscape** or
 
 Then the Apple News ad will use the size appropriate for the given device and orientation.
 
+## How It Works
+
+The ad's main `index.html` has an iframe that renders the appropriate size creative based on the device orientation (i.e. landscape vs. orientation).
+
+To enable clickthrough on iOS apps such as the Apple News app, we need to use an `<a>` with the `href` set to the clickthrough URL. The parent `window` has a `message` listener that waits for data that looks something like this:
+
+```js
+{
+	// key-value pair this index uses to update clickTag
+	type: 'UPDATE_CLICKTAG', 
+	// URL to set clickTag to
+	message: 'http://msnbc.com/something'
+}
+```
+
+In the Apple News Responsive Build Source (__TODO__), a `postClickTagURL()` function exists within the `index.html` which gets called in `AdData.js`. In `AdData`, you can call `postClickTagURL()` with the dynamic clickTag URL you need.
+
 ## Usage
 
 - __In the Creative Server root interface:__
