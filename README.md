@@ -23,6 +23,7 @@ Then the Apple News ad will use the size appropriate for the given device and or
 ## Important Notes
 
 - __If asked to built another Apple News creative, may be worth building out a size per device instead of just one creative that responds to every listed size__
+  - then having the parent index choose among a given size instead of just landscape or portrait, like it's currently doing
 - __When asked to make a specific size for Apple News (e.g. 1242x699 for Large Banners on iPhones 6-8), be sure to build it to the dimension in points__
   - so for the 1242x699 size, build it in __414x233__ instead b/c those are the dimensions of the iframe on that particular form factor
 
