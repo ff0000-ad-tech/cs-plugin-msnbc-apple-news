@@ -20,6 +20,12 @@ For both, you would choose two sizes to designate as either the **Landscape** or
 
 Then the Apple News ad will use the size appropriate for the given device and orientation.
 
+## Important Notes
+
+- __If asked to built another Apple News creative, may be worth building out a size per device instead of just one creative that responds to every listed size__
+- __When asked to make a specific size for Apple News (e.g. 1242x699 for Large Banners on iPhones 6-8), be sure to build it to the dimension in points__
+  - so for the 1242x699 size, build it in __414x233__ instead b/c those are the dimensions of the iframe on that particular form factor
+
 ## How It Works
 
 The ad's main `index.html` has an iframe that renders the appropriate size creative based on the device (iPhone 5, 6, X, etc.) and orientation (i.e. landscape vs. portrait).
@@ -49,8 +55,3 @@ In the Apple News Responsive Build Source (__TODO__), a `postClickTagURL()` func
 	1. files will be in the `_apple-news-output` directory of project root
 		- _note about underscore in directory name: not having the underscore will cause a nested Creative Server to pop up_ 
 
-## Other Notes
-
-- __If asked to built another Apple News creative, may be worth building out a size per device instead of just one creative that responds to every listed size__
-- __When asked to make a specific size for Apple News (e.g. 1242x699 for Large Banners on iPhones 6-8), be sure to build it to the dimension in points__
-  - so for the 1242x699 size, build it in __414x233__ instead b/c those are the dimensions of the iframe on that particular form factor
